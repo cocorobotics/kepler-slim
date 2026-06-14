@@ -1,3 +1,80 @@
 [build-system]
-requires = ["geopandas~=0.14.3", "ipywidgets~=8.1.5", "notebook~=6.0.1", "jupyter_packaging~=0.12.3", "jupyter-contrib-nbextensions~=0.7.0", "jupyterlab~=4.1.6", "pyarrow~=16.0.0", "setuptools>=69.5.1", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.21", "hatch-jupyter-builder>=0.9.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "keplergl"
+version = "0.3.7"
+description = "This is a simple jupyter widget for kepler.gl, an advanced geospatial visualization tool, to render large-scale interactive maps."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Shan He", email = "shan@uber.com" }]
+keywords = ["ipython", "jupyter", "widgets", "geospatial", "visualization", "webGL"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Jupyter",
+    "Framework :: IPython",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Multimedia :: Graphics",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "ipywidgets>=8.1.5",
+    "traittypes>=0.2.1",
+    "traitlets>=4.3.2",
+    "geopandas>=0.14.3",
+    "Shapely>=1.6.4.post2",
+    "jupyter>=1.0.0",
+    "jupyterlab>=4.1.6",
+    "notebook>=6.0.1",
+    "pyarrow>=16.0.0",
+    "geoarrow-pyarrow>=0.1.2",
+    "geoarrow-pandas>=0.1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/keplergl/kepler.gl/tree/master/bindings/kepler.gl-jupyter"
+
+[tool.hatch.build.targets.wheel]
+packages = ["keplergl"]
+
+# Stage the built nbextension, labextension and nbconfig files into the Jupyter data dirs.
+# Replaces the old setuptools `data_files_spec` handled by jupyter_packaging.create_cmdclass.
+[tool.hatch.build.targets.wheel.shared-data]
+"keplergl/static" = "share/jupyter/nbextensions/keplergl-jupyter"
+"keplergl-jupyter/labextension" = "share/jupyter/labextensions/keplergl-jupyter"
+"keplergl-jupyter.json" = "etc/jupyter/nbconfig/notebook.d/keplergl-jupyter.json"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/keplergl",
+    "/js",
+    "/keplergl-jupyter.json",
+    "/README.md",
+    "/RELEASE.md",
+]
+
+# Build the JS assets (`yarn build` in ./js) as part of the wheel/sdist build.
+# Replaces the old setuptools `install_npm` + `ensure_targets` commands.
+[tool.hatch.build.hooks.jupyter-builder]
+dependencies = ["hatch-jupyter-builder>=0.9.0"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = [
+    "keplergl/static/index.js",
+    "keplergl-jupyter/labextension/package.json",
+]
+skip-if-exists = [
+    "keplergl/static/index.js",
+    "keplergl-jupyter/labextension/package.json",
+]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+path = "js"
+build_cmd = "build"
+npm = ["yarn"]

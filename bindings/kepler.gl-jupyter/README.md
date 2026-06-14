@@ -292,7 +292,7 @@ You need to run step 2 and 3 to restart the js program. And step 1-3 if any js d
 This command must be run **AFTER** the `js` setup, and folder `static/` was created. It only needs to be run once.
 
 ```sh
-# dev install from folder containing setup.py
+# dev install from folder containing pyproject.toml
 pip install -e .
 
 # only needed in dev mode, not in normal mode.

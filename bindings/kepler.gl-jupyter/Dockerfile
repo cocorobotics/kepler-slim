@@ -23,11 +23,9 @@ RUN python3 -m venv .venv
 # Activate the virtual environment
 RUN . .venv/bin/activate
 
-# Install jupyter_packaging using pip
-RUN .venv/bin/pip install jupyter_packaging
-
-
-# Install keplergl-jupyter in the virtual environment from the current directory
+# Install keplergl-jupyter in the virtual environment from the current directory.
+# Build backend deps (hatchling, hatch-jupyter-builder) are resolved automatically
+# via PEP 517 build isolation from pyproject.toml's [build-system].requires.
 RUN .venv/bin/pip install .
 
 # Run jupyter notebook with token exposed in logs
