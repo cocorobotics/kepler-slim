@@ -1,0 +1,80 @@
+name: Build & release slim bundle
+
+# On every push to master: rebuild the slim UMD bundle, publish a new
+# incremented dot release (v<pkg>-slim.N), and roll the `LATEST` tag/release
+# so a stable URL always serves the newest build.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Serialize runs so concurrent pushes can't race on the version number / LATEST tag.
+concurrency:
+  group: slim-release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable Yarn 4
+        run: corepack enable && corepack prepare yarn@4.4.0 --activate
+
+      - name: Install dependencies
+        run: yarn install --immutable
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+
+      - name: Wire workspaces to source
+        run: yarn workspaces foreach -At run stab
+
+      - name: Build slim UMD bundle
+        run: yarn build:umd:slim
+
+      - name: Fetch version-matched CSS
+        run: |
+          VER=$(node -p "require('./package.json').version")
+          curl -fsSL "https://unpkg.com/kepler.gl@${VER}/umd/keplergl.min.css" -o umd/keplergl.min.css
+          ls -l umd/keplergl.slim.min.js umd/keplergl.min.css
+
+      - name: Publish incremented release + roll LATEST
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          VER=$(node -p "require('./package.json').version")
+
+          # next dot release: max existing -slim.N + 1
+          N=$(gh release list --limit 200 --json tagName -q '.[].tagName' \
+              | grep -oE -- '-slim\.[0-9]+$' | grep -oE '[0-9]+$' | sort -n | tail -1 || true)
+          N=$(( ${N:-0} + 1 ))
+          TAG="v${VER}-slim.${N}"
+          echo "Publishing ${TAG} from ${SHA}"
+
+          # immutable, versioned release
+          gh release create "$TAG" umd/keplergl.slim.min.js umd/keplergl.min.css \
+            --target "$SHA" --prerelease \
+            --title "kepler.gl slim (${TAG})" \
+            --notes "Automated slim build from \`${SHA}\`. See SLIMMING.md."
+
+          # rolling LATEST tag + release (stable download URL)
+          NOTES="Rolling pointer to the newest slim build (currently ${TAG}). Download URLs here always serve the latest build."
+          if gh release view LATEST >/dev/null 2>&1; then
+            gh api -X PATCH "repos/${GH_REPO}/git/refs/tags/LATEST" -f sha="$SHA" -F force=true >/dev/null
+            gh release edit LATEST --title "Latest slim build" --notes "$NOTES"
+            gh release upload LATEST umd/keplergl.slim.min.js umd/keplergl.min.css --clobber
+          else
+            gh release create LATEST umd/keplergl.slim.min.js umd/keplergl.min.css \
+              --target "$SHA" --prerelease --title "Latest slim build" --notes "$NOTES"
+          fi
