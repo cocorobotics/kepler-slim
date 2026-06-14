@@ -64,7 +64,7 @@ The `npm run dev` command watches for changes in the `src/` directory and automa
 ## Quick Test
 
 ```python
-from keplergl import KeplerGl
+from kepler_slim import KeplerGl
 
 # Create a map
 map = KeplerGl(height=400)
@@ -79,7 +79,7 @@ uv run pytest
 
 ## Available npm Scripts
 
-- `npm run build` - Build TypeScript to `keplergl/static/`
+- `npm run build` - Build TypeScript to `kepler_slim/static/`
 - `npm run dev` - Build with watch mode for development
 - `npm run typecheck` - Run TypeScript type checking
 - `npm run lint` - Run ESLint on source files
@@ -101,8 +101,10 @@ The version in `pyproject.toml` determines what type of release you can publish:
 
 1. **Update the version** in both files:
    - `pyproject.toml` (line: `version = "x.x.x"`)
-   - `keplergl/_version.py` (line: `__version__ = "x.x.x"`)
-   - On a kepler.gl **major** release, also update `DEFAULT_KEPLER_GL_CDN_VERSION` in `keplergl/_html_export.py` to match the new major version.
+   - `kepler_slim/_version.py` (line: `__version__ = "x.x.x"`)
+   - The HTML export loads the slim bundle from the kepler-slim `LATEST` release
+     (`KEPLER_SLIM_RELEASE` in `kepler_slim/_html_export.py`); update it only if the
+     release URL scheme changes.
 
 2. **Go to GitHub Actions** → "Build and Publish KeplerGL Python Package" workflow
 

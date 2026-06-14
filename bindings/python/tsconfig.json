@@ -14,5 +14,5 @@
     "isolatedModules": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "keplergl/static"]
+  "exclude": ["node_modules", "kepler_slim/static"]
 }

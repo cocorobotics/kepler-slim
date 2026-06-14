@@ -10,8 +10,8 @@ import geopandas as gpd
 import pytest
 from shapely.geometry import Point
 
-from keplergl import KeplerGl
-from keplergl._html_export import (
+from kepler_slim import KeplerGl
+from kepler_slim._html_export import (
     _dataset_to_csv,
     _dataset_to_geojson,
     _serialize_datasets_for_html,
@@ -237,19 +237,19 @@ class TestExportMapHtml:
         assert html.startswith("<!DOCTYPE html>")
         assert "</html>" in html
 
-    def test_contains_kepler_gl_cdn_script(self, sample_df):
+    def test_uses_release_override(self, sample_df):
         html = export_map_html(
             data={"test": sample_df},
             config={},
-            kepler_gl_version="3.2.6",
+            release="https://example.com/r",
         )
-        assert "unpkg.com/kepler.gl@3.2.6/umd/keplergl.min.js" in html
-        assert "unpkg.com/kepler.gl@3.2.6/umd/keplergl.min.css" in html
+        assert '<script src="https://example.com/r/keplergl.slim.min.js"></script>' in html
+        assert 'href="https://example.com/r/keplergl.min.css"' in html
 
-    def test_default_uses_latest_stable_cdn_tag(self, sample_df):
+    def test_default_uses_latest_slim_release(self, sample_df):
         html = export_map_html(data={"test": sample_df}, config={})
-        assert "unpkg.com/kepler.gl@3/umd/keplergl.min.js" in html
-        assert "unpkg.com/kepler.gl@3/umd/keplergl.min.css" in html
+        assert "releases/download/LATEST/keplergl.slim.min.js" in html
+        assert "releases/download/LATEST/keplergl.min.css" in html
 
     def test_contains_react_redux_deps(self, sample_df):
         html = export_map_html(data={"test": sample_df}, config={})
@@ -353,7 +353,7 @@ class TestSaveToHtml:
             content = f.read()
         assert "<!DOCTYPE html>" in content
         assert "cities" in content
-        assert "unpkg.com/kepler.gl@3/umd/keplergl.min.js" in content
+        assert "releases/download/LATEST/keplergl.slim.min.js" in content
 
     def test_saves_with_config(self, sample_df, tmp_path):
         config = {"version": "v1", "config": {"mapState": {"zoom": 5}}}

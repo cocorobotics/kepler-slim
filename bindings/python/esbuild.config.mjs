@@ -22,7 +22,7 @@ const buildOptions = {
   entryPoints: {widget: 'src/index.ts'},
   bundle: true,
   format: 'esm',
-  outdir: 'keplergl/static',
+  outdir: 'kepler_slim/static',
   loader: {
     '.ts': 'ts',
     '.tsx': 'tsx',

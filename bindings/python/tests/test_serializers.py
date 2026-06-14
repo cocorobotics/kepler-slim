@@ -8,7 +8,7 @@ import pytest
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point, Polygon
-from keplergl.serializers import serialize_dataset
+from kepler_slim.serializers import serialize_dataset
 
 
 class TestDataFrameSerialization:
