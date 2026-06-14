@@ -1,5 +1,10 @@
 Copyright contributors to the kepler.gl project
 
+kepler-slim is an open-source fork of kepler.gl
+(https://github.com/keplergl/kepler.gl), maintained by Coco (cocorobotics). It is
+distributed under the same MIT License as the upstream project, reproduced below.
+The original kepler.gl copyright notice above is retained as required by the license.
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights

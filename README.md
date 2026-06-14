@@ -1,26 +1,43 @@
-<p align="right">
-  <a href="https://npmjs.org/package/kepler.gl">
-    <img src="https://img.shields.io/npm/v/kepler.gl.svg?style=flat" alt="version" />
-  </a>
-  <a href="https://travis-ci.com/keplergl/kepler.gl">
-    <img src="https://api.travis-ci.com/keplergl/kepler.gl.svg?branch=master" alt="build" />
-  </a>
-  <a href="https://github.com/keplergl/kepler.gl">
-    <img src="https://img.shields.io/github/stars/keplergl/kepler.gl.svg?style=flat" alt="stars" />
-  </a>
-  <a href='https://opensource.org/licenses/MIT'>
-    <img src='https://img.shields.io/badge/License-MIT-blue.svg' alt='MIT License' />
-  </a>
-  <a href='https://app.fossa.com/projects/custom%2B4458%2Fgithub.com%2Fkeplergl%2Fkepler.gl?ref=badge_shield'>
-    <img src='https://app.fossa.com/api/projects/custom%2B4458%2Fgithub.com%2Fkeplergl%2Fkepler.gl.svg?type=shield' alt='Fossa' />
-  </a>
-  <a href="https://app.netlify.com/sites/keplergl/deploys">
-    <img src="https://api.netlify.com/api/v1/badges/0c9b895c-acd0-43fd-8af7-fe960181b686/deploy-status" alt="Netlify Status"/>
-  </a>
-  <a href='https://coveralls.io/github/keplergl/kepler.gl?branch=master'>
-    <img src='https://coveralls.io/repos/github/keplergl/kepler.gl/badge.svg?branch=master' alt='Coverage Status' />
-  </a>
-</p>
+# kepler-slim
+
+> **An open-source fork of [kepler.gl](https://github.com/keplergl/kepler.gl), maintained by Coco.**
+
+`kepler-slim` produces a **size-reduced build** of the kepler.gl UMD bundle so it can be embedded
+in environments with strict web-view asset limits — for example [Hex](https://hex.tech), which
+rejects assets larger than 10 MB. The stock kepler.gl bundle is ~14 MB; the slim build is ~9.4 MB.
+
+This fork tracks upstream kepler.gl and leaves the library API unchanged — it only changes the
+**bundled feature set** and adds build/release tooling.
+
+### What the slim build removes
+
+- **AI Assistant** — `@kepler.gl/ai-assistant` and its echarts / OpenAssistant / AI-SDK
+  dependency tree (~3.8 MB).
+- **MapLibre renderer** — `maplibre-gl` and `@vis.gl/react-maplibre` (~0.8 MB). The slim build
+  renders basemaps with **Mapbox** and **requires a Mapbox access token**; the default basemap is
+  Mapbox `dark`. Carto/MapLibre basemaps are not available.
+
+DuckDB is not part of the default upstream bundle and is likewise not included.
+
+### Using it
+
+- Build locally: `yarn build:umd:slim` → `umd/keplergl.slim.min.js`
+- Always-latest hosted bundle:
+  `https://github.com/cocorobotics/kepler-slim/releases/download/LATEST/keplergl.slim.min.js`
+- Full size analysis: **[SLIMMING.md](./SLIMMING.md)**
+- Embedding example (e.g. in Hex): **[examples/hex-slim-embed/](./examples/hex-slim-embed/)**
+
+### Contributing
+
+Core kepler.gl features and bug fixes should be contributed **upstream** at
+[keplergl/kepler.gl](https://github.com/keplergl/kepler.gl) and will be pulled into this fork.
+Fork-specific changes (slim build, release automation, embedding docs) go through a pull request
+here — see **[contributing/README.md](./contributing/README.md)**.
+
+---
+
+<sub>The remainder of this README is the upstream kepler.gl documentation; the library API
+described below applies to this fork as well.</sub>
 
 <h1 align="center">
   kepler.gl | <a href="https://kepler.gl">Website</a> | <a href="https://kepler.gl/#/demo">Demo App</a> | <a href="https://docs.kepler.gl/">Docs</a>
@@ -31,7 +48,7 @@
 
 [<img width="600" alt="Kepler.gl Demo" src="./screenshots/screenshot.png">](https://kepler.gl/demo)
 
-[Kepler.gl][web] is a data-agnostic, high-performance web-based application for visual exploration of large-scale geolocation data sets. Built on top of [MapLibre GL](https://maplibre.org/) and [deck.gl](https://deck.gl/), kepler.gl can render millions of points representing thousands of trips and perform spatial aggregations on the fly.
+[Kepler.gl][web] is a data-agnostic, high-performance web-based application for visual exploration of large-scale geolocation data sets. Built on top of [Mapbox GL](https://www.mapbox.com/) and [deck.gl](https://deck.gl/), kepler.gl can render millions of points representing thousands of trips and perform spatial aggregations on the fly.
 
 Kepler.gl is also a React component that uses [Redux](https://redux.js.org/) to manage its state and data flow. It can be embedded into other React-Redux applications and is highly customizable. For information on how to embed kepler.gl in your app take a look at the [documentation](https://docs.kepler.gl/).
 
