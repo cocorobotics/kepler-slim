@@ -9,7 +9,7 @@ import anywidget
 import traitlets
 
 from .serializers import data_to_json, data_from_json
-from ._html_export import export_map_html, DEFAULT_KEPLER_GL_CDN_VERSION
+from ._html_export import export_map_html
 
 _STATIC_DIR = pathlib.Path(__file__).parent / "static"
 
@@ -92,8 +92,9 @@ class KeplerGl(anywidget.AnyWidget):
     ):
         """Export the map to a standalone HTML file.
 
-        The exported HTML loads kepler.gl from the unpkg CDN (no local build needed)
-        and embeds the current data and configuration.
+        The exported HTML loads the kepler-slim bundle from its GitHub release
+        (no local build needed) and embeds the current data and configuration.
+        A Mapbox access token is required (the slim build uses Mapbox basemaps).
 
         Args:
             file_name: Output HTML file path (default: 'keplergl_map.html')
@@ -126,7 +127,6 @@ class KeplerGl(anywidget.AnyWidget):
             read_only=read_only,
             center_map=center_map,
             mapbox_token=token,
-            kepler_gl_version=DEFAULT_KEPLER_GL_CDN_VERSION,
             json_encoder=json_encoder,
             app_name=resolved_app_name,
             theme=resolved_theme,

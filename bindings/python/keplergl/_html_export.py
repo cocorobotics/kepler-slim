@@ -1,7 +1,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright contributors to the kepler.gl project
 
-"""Generate standalone HTML export using the kepler.gl UMD bundle from CDN."""
+"""Generate standalone HTML export using the kepler-slim UMD bundle.
+
+The bundle is loaded from this fork's rolling ``LATEST`` GitHub release, so exported
+maps always use the latest slim build.
+"""
 
 from __future__ import annotations
 
@@ -12,7 +16,11 @@ from typing import Optional
 import pandas as pd
 import geopandas as gpd
 
-DEFAULT_KEPLER_GL_CDN_VERSION = "3"
+# Base URL of the kepler-slim rolling release. The slim JS + CSS assets live under it.
+# Pin to a specific tag (e.g. .../releases/download/v3.3.0-alpha.1-slim.3) for reproducibility.
+KEPLER_SLIM_RELEASE = (
+    "https://github.com/cocorobotics/kepler-slim/releases/download/LATEST"
+)
 
 
 def _dataset_to_csv(data) -> Optional[str]:
@@ -141,14 +149,16 @@ def export_map_html(
     read_only: bool = False,
     center_map: bool = False,
     mapbox_token: str = "",
-    kepler_gl_version: str = DEFAULT_KEPLER_GL_CDN_VERSION,
+    release: str = KEPLER_SLIM_RELEASE,
     json_encoder=str,
     app_name: str = "kepler.gl",
     theme: str = "",
 ) -> str:
-    """Generate a standalone HTML string that renders a kepler.gl map.
+    """Generate a standalone HTML string that renders a kepler-slim map.
 
-    Loads all dependencies from CDN (unpkg). No local JS build required.
+    The kepler-slim bundle is loaded from its GitHub release and React/Redux from a
+    CDN. No local JS build required. A Mapbox access token is required (the slim
+    build uses Mapbox basemaps).
 
     Args:
         data: Dict of dataset name to data.
@@ -156,7 +166,9 @@ def export_map_html(
         read_only: If True, hide side panel to disable map customization.
         center_map: If True, fit map bounds to the data.
         mapbox_token: Mapbox API access token.
-        kepler_gl_version: kepler.gl UMD bundle version tag for unpkg.
+        release: Base URL of the kepler-slim release to load the bundle from.
+            Defaults to the rolling ``LATEST`` release; pin to a tagged release
+            URL for reproducibility.
         json_encoder: Fallback function passed as ``default`` when
             JSON-serializing GeoDataFrame data.  Defaults to ``str`` so
             that ``datetime`` and other non-native JSON types are
@@ -189,11 +201,10 @@ def export_map_html(
     <link rel="stylesheet" href="https://d1a3f4spazzrp4.cloudfront.net/kepler.gl/uber-fonts/4.0.0/superfine.css">
 
     <!--Kepler css-->
-    <link href="https://unpkg.com/kepler.gl@{kepler_gl_version}/umd/keplergl.min.css" rel="stylesheet">
+    <link href="{release}/keplergl.min.css" rel="stylesheet">
 
     <!--MapBox css-->
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css" rel="stylesheet">
-    <link href="https://unpkg.com/maplibre-gl@^3/dist/maplibre-gl.css" rel="stylesheet">
 
     <!-- Load React/Redux -->
     <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
@@ -202,8 +213,8 @@ def export_map_html(
     <script src="https://unpkg.com/react-redux@8.1.2/dist/react-redux.min.js" crossorigin></script>
     <script src="https://unpkg.com/styled-components@6.1.8/dist/styled-components.min.js" crossorigin></script>
 
-    <!-- Load Kepler.gl -->
-    <script src="https://unpkg.com/kepler.gl@{kepler_gl_version}/umd/keplergl.min.js" crossorigin></script>
+    <!-- Load kepler-slim (no crossorigin: the GitHub release redirects cross-origin) -->
+    <script src="{release}/keplergl.slim.min.js"></script>
 
     <style type="text/css">
       body {{margin: 0; padding: 0; overflow: hidden;}}

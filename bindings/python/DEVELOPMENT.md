@@ -102,7 +102,9 @@ The version in `pyproject.toml` determines what type of release you can publish:
 1. **Update the version** in both files:
    - `pyproject.toml` (line: `version = "x.x.x"`)
    - `keplergl/_version.py` (line: `__version__ = "x.x.x"`)
-   - On a kepler.gl **major** release, also update `DEFAULT_KEPLER_GL_CDN_VERSION` in `keplergl/_html_export.py` to match the new major version.
+   - The HTML export loads the slim bundle from the kepler-slim `LATEST` release
+     (`KEPLER_SLIM_RELEASE` in `keplergl/_html_export.py`); update it only if the
+     release URL scheme changes.
 
 2. **Go to GitHub Actions** → "Build and Publish KeplerGL Python Package" workflow
 

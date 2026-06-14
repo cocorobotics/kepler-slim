@@ -33,11 +33,9 @@ import html as _html
 import json
 from typing import Any, Dict, Optional
 
-# Pinned slim release. Bump the tag to adopt a newer slim build.
-RELEASE = (
-    "https://github.com/cocorobotics/kepler-slim/releases/download/"
-    "v3.3.0-alpha.1-slim.2"
-)
+# Rolling LATEST release — always serves the newest slim build. Pin to a tagged
+# release (e.g. .../releases/download/v3.3.0-alpha.1-slim.3) for reproducibility.
+RELEASE = "https://github.com/cocorobotics/kepler-slim/releases/download/LATEST"
 
 _TEMPLATE = """<!DOCTYPE html>
 <html>

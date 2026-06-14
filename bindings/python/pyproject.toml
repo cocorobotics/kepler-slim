@@ -1,11 +1,11 @@
 [project]
-name = "keplergl"
+name = "kepler-slim"
 version = "0.4.0rc4"
-description = "Kepler.gl Jupyter Widget"
+description = "kepler-slim: a slim, embeddable build of the kepler.gl Jupyter widget. HTML export loads the slim bundle from the kepler-slim GitHub release."
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
-authors = [{name = "Uber Technologies, Inc."}]
+authors = [{name = "Coco (cocorobotics)"}, {name = "Uber Technologies, Inc."}]
 classifiers = [
     "Framework :: Jupyter",
     "Programming Language :: Python :: 3",
