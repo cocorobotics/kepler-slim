@@ -19,7 +19,7 @@ and [SLIMMING.md](https://github.com/cocorobotics/kepler-slim/blob/master/SLIMMI
 pip install kepler-slim
 ```
 
-The import name is still `keplergl`:
+Import it as `kepler_slim` (underscore — the PyPI name is `kepler-slim`):
 
 ### Prerequisites
 - Python >= 3.9
@@ -28,7 +28,7 @@ The import name is still `keplergl`:
 ## Quick Start
 
 ```python
-from keplergl import KeplerGl
+from kepler_slim import KeplerGl
 
 # Create a map (pass a Mapbox token for the slim build's basemaps)
 m = KeplerGl(height=400, mapbox_token="pk.your_token")

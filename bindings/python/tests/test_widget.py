@@ -4,7 +4,7 @@
 """Widget tests."""
 
 import pytest
-from keplergl import KeplerGl
+from kepler_slim import KeplerGl
 
 
 def test_widget_creation():

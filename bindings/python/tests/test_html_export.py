@@ -10,8 +10,8 @@ import geopandas as gpd
 import pytest
 from shapely.geometry import Point
 
-from keplergl import KeplerGl
-from keplergl._html_export import (
+from kepler_slim import KeplerGl
+from kepler_slim._html_export import (
     _dataset_to_csv,
     _dataset_to_geojson,
     _serialize_datasets_for_html,
