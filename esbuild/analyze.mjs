@@ -20,11 +20,16 @@ const stubPlugin = {
     const filter = new RegExp(
       '^(' + exclude.map(e => e.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')(/|$)'
     );
-    build.onResolve({filter}, args => ({path: args.path, namespace: 'stub'}));
+    build.onResolve({filter}, args => ({
+      path: args.path,
+      namespace: /\.(css|scss)$/.test(args.path) ? 'stub-css' : 'stub'
+    }));
+    // CommonJS stub so arbitrary named imports resolve (to undefined) without esbuild errors
     build.onLoad({filter: /.*/, namespace: 'stub'}, () => ({
-      contents: 'export default {}; export const __stubbed = true;',
+      contents: 'module.exports = new Proxy(function(){}, {get:()=>undefined});',
       loader: 'js'
     }));
+    build.onLoad({filter: /.*/, namespace: 'stub-css'}, () => ({contents: '', loader: 'css'}));
   }
 };
 
