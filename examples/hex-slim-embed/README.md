@@ -43,6 +43,25 @@ in the cell so Hex displays it. It loads the map as a `data:` URL via the
 iframe's `src` (not `srcdoc`), so the frame is its own browsing context and
 kepler's scripts run instead of being blocked by Hex's page CSP.
 
+## Save and reuse a map config
+
+The embed runs entirely in the browser, so there's no automatic sync back to
+Python (that's a feature of the full `keplergl` widget, which is too large for
+Hex). To capture a styling you've set up interactively:
+
+1. Style the map in the UI, then click **Copy config** (top-right). It fills a
+   text box with the config JSON and copies it to the clipboard.
+2. Paste it back into your notebook and pass it as `config=`:
+
+   ```python
+   import json
+   config = json.loads(r'''<paste the JSON here>''')   # the {"version": "v1", "config": {...}} blob
+   render({"my_data": df}, mapbox_token="pk.your_token", config=config)
+   ```
+
+The map will reopen with your saved layers, colors, filters, and camera. Pass
+`show_config_tool=False` to hide the button (e.g. for a display-only map).
+
 ## Troubleshooting
 
 - **Totally blank (no kepler UI at all):** the map scripts were blocked. Make

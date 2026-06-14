@@ -58,6 +58,7 @@ _TEMPLATE = """<!DOCTYPE html>
   </head>
   <body>
     <div id="app"></div>
+__CONFIG_TOOL_HTML__
     <script>
       const reducers = (function (redux, keplerGl) {
         return redux.combineReducers({
@@ -94,10 +95,29 @@ __DATASETS__
           store.dispatch(keplerGl.addDataToMap(
             {datasets: datasets, config: config, options: {centerMap: __CENTER_MAP__}}));
         }, 500);
+        var _btn = document.getElementById('kg-cfg-btn');
+        if (_btn) _btn.onclick = function () {
+          var saved = keplerGl.KeplerGlSchema.getConfigToSave(store.getState().keplerGl.map);
+          var _ta = document.getElementById('kg-cfg-out');
+          _ta.value = JSON.stringify(saved);
+          _ta.style.display = 'block';
+          _ta.focus(); _ta.select();
+          try {
+            document.execCommand('copy');
+            _btn.textContent = 'Copied! (paste into Python)';
+            setTimeout(function () { _btn.textContent = 'Copy config'; }, 2000);
+          } catch (e) {}
+        };
       }(KeplerGl, store));
     </script>
   </body>
 </html>"""
+
+
+_CONFIG_TOOL_HTML = """    <div style="position:absolute;top:10px;right:10px;z-index:9999;font-family:sans-serif">
+      <button id="kg-cfg-btn" style="padding:6px 10px;cursor:pointer;border-radius:4px;border:1px solid #888;background:#fff">Copy config</button>
+      <textarea id="kg-cfg-out" readonly style="display:none;width:380px;height:240px;margin-top:6px;font:11px/1.4 monospace"></textarea>
+    </div>"""
 
 
 def kepler_html(
@@ -107,6 +127,7 @@ def kepler_html(
     center_map: bool = True,
     read_only: bool = False,
     app_name: str = "kepler.gl",
+    show_config_tool: bool = True,
     release: str = RELEASE,
 ) -> str:
     """Return a standalone HTML document that renders a kepler.gl map.
@@ -120,6 +141,8 @@ def kepler_html(
         center_map: Fit the map bounds to the data on load.
         read_only: Hide the side panel (display-only map).
         app_name: Title / side-panel header.
+        show_config_tool: Show a "Copy config" button that extracts the current
+            map config as JSON (paste it back as ``config=`` to reuse a styling).
         release: Base URL of the slim release to load assets from.
     """
     slim_js = f"{release}/keplergl.slim.min.js"
@@ -167,6 +190,7 @@ def kepler_html(
         .replace("__APP_NAME__", _html.escape(app_name))
         .replace("__DATASETS__", "\n".join(rows))
         .replace("__CONFIG__", json.dumps(config or {}))
+        .replace("__CONFIG_TOOL_HTML__", _CONFIG_TOOL_HTML if show_config_tool else "")
     )
 
     # Guarantee only the slim build is referenced — never the generic CDN bundle.
