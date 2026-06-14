@@ -1,0 +1,8 @@
+# CODEOWNERS — required reviewers for changes to this repo.
+#
+# The coco-git-admin team are the maintainers (Maintain role). Branch protection
+# on `master` restricts merging to this team and requires a pull request, so they
+# are the only ones who can approve/merge a change.
+#
+# Every file is owned by the maintainers team:
+* @cocorobotics/coco-git-admin
