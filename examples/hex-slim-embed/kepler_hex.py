@@ -36,7 +36,7 @@ from typing import Any, Dict, Optional
 # Pinned slim release. Bump the tag to adopt a newer slim build.
 RELEASE = (
     "https://github.com/cocorobotics/kepler-slim/releases/download/"
-    "v3.3.0-alpha.1-slim.1"
+    "v3.3.0-alpha.1-slim.2"
 )
 
 _TEMPLATE = """<!DOCTYPE html>
