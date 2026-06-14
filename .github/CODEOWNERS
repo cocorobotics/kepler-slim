@@ -1,0 +1,15 @@
+# CODEOWNERS — required reviewers for changes to this repo.
+#
+# Branch protection on `master` already requires a pull request with an
+# approving review before merging, and is enforced for admins too.
+#
+# To require that approvals come specifically from maintainers:
+#   1. Create a maintainers team in the org (Settings → Teams), e.g.
+#      `@cocorobotics/kepler-slim-maintainers`, and grant it the **Maintain**
+#      role on this repository.
+#   2. Uncomment the line below (replace with your team slug). Code owners must
+#      have write/maintain access for their review to count.
+#   3. In Settings → Branches → master, enable
+#      "Require review from Code Owners".
+#
+# * @cocorobotics/kepler-slim-maintainers
