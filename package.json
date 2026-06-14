@@ -309,5 +309,10 @@
     "node": "20.19.3",
     "yarn": "4.4.0"
   },
-  "packageManager": "yarn@4.4.0"
+  "packageManager": "yarn@4.4.0",
+  "dependenciesMeta": {
+    "gl": {
+      "built": false
+    }
+  }
 }
