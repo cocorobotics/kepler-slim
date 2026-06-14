@@ -176,16 +176,21 @@ def kepler_html(
 
 
 def render(datasets: Dict[str, Any], height: int = 700, **kwargs):
-    """Render the map as an `IPython.display.HTML` iframe for a Hex/Jupyter cell.
+    """Render the map for a Hex/Jupyter cell via ``IPython.display.IFrame``.
+
+    The map document is base64-encoded into a ``data:`` URL and loaded as the
+    iframe's ``src``. This matters in Hex: a document loaded by ``src`` is its
+    own browsing context and does NOT inherit Hex's restrictive page CSP, so
+    kepler.gl's scripts actually execute. (A ``srcdoc`` iframe inherits the
+    parent CSP and renders blank.)
 
     Extra keyword args are forwarded to :func:`kepler_html` (mapbox_token,
     config, read_only, center_map, app_name, release).
     """
-    from IPython.display import HTML  # imported lazily so the module imports outside notebooks
+    import base64
+
+    from IPython.display import IFrame  # imported lazily so the module imports outside notebooks
 
     doc = kepler_html(datasets, **kwargs)
-    srcdoc = _html.escape(doc, quote=True)
-    return HTML(
-        f'<iframe srcdoc="{srcdoc}" style="width:100%;height:{int(height)}px;border:0" '
-        f'sandbox="allow-scripts allow-same-origin"></iframe>'
-    )
+    b64 = base64.b64encode(doc.encode("utf-8")).decode("ascii")
+    return IFrame(src=f"data:text/html;base64,{b64}", width="100%", height=int(height))

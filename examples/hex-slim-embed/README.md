@@ -38,8 +38,22 @@ df = pd.DataFrame({
 render({"my_data": df}, mapbox_token="pk.your_mapbox_token", height=700)
 ```
 
-`render(...)` returns an `IPython.display.HTML` iframe — make it the last
-expression in the cell so Hex displays it.
+`render(...)` returns an `IPython.display.IFrame` — make it the last expression
+in the cell so Hex displays it. It loads the map as a `data:` URL via the
+iframe's `src` (not `srcdoc`), so the frame is its own browsing context and
+kepler's scripts run instead of being blocked by Hex's page CSP.
+
+## Troubleshooting
+
+- **Totally blank (no kepler UI at all):** the map scripts were blocked. Make
+  sure you're on the current `render()` (it uses `IFrame` + a `data:` src, not
+  `HTML(srcdoc=…)`). A `srcdoc` iframe inherits Hex's restrictive CSP and renders
+  empty. If it's still blank, Hex's CSP is blocking embedded scripts entirely —
+  host the output of `kepler_html(...)` at a public URL and load it with
+  `IPython.display.IFrame(src=that_url)`.
+- **Kepler UI loads but the map area is blank:** that's the Mapbox token — you
+  left the `pk.your_mapbox_token` placeholder, or the token is invalid/lacks
+  permissions. The slim build has no free fallback basemap.
 
 ### Options
 
