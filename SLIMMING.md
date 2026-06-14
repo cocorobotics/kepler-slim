@@ -108,6 +108,9 @@ time it:
 - rewrites `DEFAULT_BASE_MAP_STYLE` from `'dark-matter'` (Carto/MapLibre) to `'dark'` (Mapbox)
   so the bundle works out of the box.
 
+A ready-to-use Python helper for embedding this build in a Hex cell lives in
+[`examples/hex-slim-embed/`](examples/hex-slim-embed/).
+
 **Caveats for the embedding (Hex) app:**
 
 - A **Mapbox access token is required** (pass `mapboxApiAccessToken` to `KeplerGl`). The free
